@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+# Configure: rsync-backup
+if [[ ! -e "${EP_RUN}" ]] ; then
+	log "Configuring $(basename "${0}") for first run ..."
+
+	# Generate ssh keys ...
+	generate_sshkey rsync-backup
+
+	log "Staging ssh keys ..."
+	install --group=root --mode=0600 --owner=root "${EP_SECRETS_ROOT}/id_rsa.rsync-backup" "/root/.ssh/id_rsa"
+	install --group=root --mode=0644 --owner=root "${EP_SECRETS_ROOT}/id_rsa.rsync-backup.pub" "/root/.ssh/id_rsa.pub"
+
+	# Volume initialization
+	if [[ ! -f "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf" ]] ; then
+		log "Initializing data volume ..."
+
+		if [[ "X${RSYNC_BACKUP_CONF}" != "X" ]] ; then
+			log "Deploying custom global rsync-backup configuration ..."
+			echo "${RSYNC_BACKUP_CONF}" | envsubst > "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf"
+		else
+			log "Deploying global rsync-backup configuration ..."
+			install --group=root --mode=0644 --owner=root "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf.dist" "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf"
+		fi
+
+		path_ssh_config="${RSYNC_BACKUP_CONFIG}/ssh_config"
+		if [[ ! -e "${path_ssh_config}" ]] ; then
+			log "Generating: ${path_ssh_config} ..."
+			install --group=root --mode=0644 --owner=root /dev/null "${path_ssh_config}"
+		fi
+		chown root:root "${path_ssh_config}"
+		chmod 0640 "${path_ssh_config}"
+
+		path_log=/var/log/rsync-backup.log
+		if [[ ! -e "${path_log}" ]] ; then
+			log "Generating: ${path_log} ..."
+			install --group=root --mode=0640 --owner=root /dev/null "${path_log}"
+		fi
+		chown root:root "${path_log}"
+		chmod 0640 "${path_log}"
+
+		log "Applying ownership and permissions ..."
+		find "${RSYNC_BACKUP_CONFIG}" \( \! -user root -o \! -group root \) -exec chown root:root {} \;
+		# Do not recurse into backup file sets by using 'install' here ...
+		chown root:root "${RSYNC_BACKUP_DATA}"
+		chmod 0700 "${RSYNC_BACKUP_DATA}"
+	else
+		log "Skipping data volume initialization ..."
+	fi
+fi
+
