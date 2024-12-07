@@ -19,7 +19,7 @@ if [[ ! -e "${EP_RUN}" ]] ; then
 
 		if [[ "X${RSYNC_BACKUP_CONF}" != "X" ]] ; then
 			log "Deploying custom global rsync-backup configuration ..."
-			echo "${RSYNC_BACKUP_CONF}" | envsubst > "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf"
+			echo "${RSYNC_BACKUP_CONF}" | DOLLAR='$' envsubst > "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf"
 		else
 			log "Deploying global rsync-backup configuration ..."
 			install --group=root --mode=0644 --owner=root "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf.dist" "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf"
