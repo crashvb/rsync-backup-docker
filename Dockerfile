@@ -17,7 +17,7 @@ LABEL \
 RUN docker-apt-install gnupg && \
 	apt-add-repo "crashvb-server27nw-jammy" https://ppa.launchpadcontent.net/crashvb/server27nw/ubuntu/ main E8D9DE631E0F371CE47339DE636C33BFCD7D1C4F && \
 	apt-get update && \
-	docker-apt openssh-client rsync-backup
+	docker-apt iputils-ping netbase openssh-client rsync-backup
 
 # Configure: rsync-backup
 ENV \
@@ -27,6 +27,7 @@ COPY cron.rsync-backup /etc/cron.daily/rsync-backup
 COPY crontab /etc/crontab
 COPY logrotate.rsync-backup /etc/logrorate.d/rsync-backup
 RUN install --directory --group=root --mode=0755 --owner=root /root/.ssh/ && \
+	sed --expression='/^\$Server27NW::Log::/a$Server27NW::Log::LOG_OWNER = "root";\n$Server27NW::Log::LOG_GROUP = "root";' --in-place /usr/bin/rsync-backup && \
 	sed --expression="/UserKnownHostsFile/cUserKnownHostsFile ${RSYNC_BACKUP_CONFIG}/known_hosts" --in-place /etc/ssh/ssh_config && \
 	ln --force --symbolic "${RSYNC_BACKUP_CONFIG}/known_hosts" /root/.ssh/known_hosts && \
 	ln --force --symbolic "${RSYNC_BACKUP_CONFIG}/ssh_config" /root/.ssh/config && \

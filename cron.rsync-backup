@@ -2,6 +2,5 @@
 
 source /etc/profile
 
-directory="$(basename "$(dirname "${0}")")"
-exec /usr/bin/rsync-backup -c "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf" "${directory##*.}"
+exec /usr/bin/rsync-backup
 
