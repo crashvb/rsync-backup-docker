@@ -8,7 +8,7 @@
 
 ## Overview
 
-This docker image contains rsync-backup
+This docker image contains rsync-backup.
 
 ## Entrypoint Scripts
 
@@ -20,7 +20,7 @@ The embedded entrypoint script is located at `/etc/entrypoint.d/rsync-backup` an
 
  | Variable | Default Value | Description |
  | -------- | ------------- | ----------- |
- | RSYNC\_BACKUP\_CONF | | If defined, this value will be written to `<rsync-backup_conf>/rsync-backup.conf`. |
+ | RSYNC\_BACKUP\_YML | | If defined, this value will be written to `<rsync-backup_config>/rsync-backup.yml`. |
 
 2. Volume permissions are normalized.
 

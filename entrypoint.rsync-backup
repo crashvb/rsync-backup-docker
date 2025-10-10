@@ -14,15 +14,15 @@ if [[ ! -e "${EP_RUN}" ]] ; then
 	install --group=root --mode=0644 --owner=root "${EP_SECRETS_ROOT}/id_rsa.rsync-backup.pub" "/root/.ssh/id_rsa.pub"
 
 	# Volume initialization
-	if [[ ! -f "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf" ]] ; then
+	if [[ ! -f "${RSYNC_BACKUP_CONFIG}/rsync-backup.yml" ]] ; then
 		log "Initializing data volume ..."
 
-		if [[ "X${RSYNC_BACKUP_CONF}" != "X" ]] ; then
+		if [[ "X${RSYNC_BACKUP_YML}" != "X" ]] ; then
 			log "Deploying custom global rsync-backup configuration ..."
-			echo "${RSYNC_BACKUP_CONF}" | DOLLAR='$' envsubst > "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf"
+			echo "${RSYNC_BACKUP_YML}" | DOLLAR='$' envsubst > "${RSYNC_BACKUP_CONFIG}/rsync-backup.yml"
 		else
 			log "Deploying global rsync-backup configuration ..."
-			install --group=root --mode=0644 --owner=root "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf.dist" "${RSYNC_BACKUP_CONFIG}/rsync-backup.conf"
+			install --group=root --mode=0644 --owner=root "${RSYNC_BACKUP_CONFIG}/rsync-backup.yml.dist" "${RSYNC_BACKUP_CONFIG}/rsync-backup.yml"
 		fi
 
 		path_ssh_config="${RSYNC_BACKUP_CONFIG}/ssh_config"
