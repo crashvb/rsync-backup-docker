@@ -17,7 +17,7 @@ LABEL \
 RUN docker-apt-install gnupg && \
 	apt-add-repo "crashvb-server27nw-jammy" https://ppa.launchpadcontent.net/crashvb/server27nw/ubuntu/ main E8D9DE631E0F371CE47339DE636C33BFCD7D1C4F && \
 	apt-get update && \
-	docker-apt iputils-ping netbase openssh-client python3-yaml rsync-backup
+	docker-apt ca-certificates-server27nw iputils-ping netbase openssh-client python3-yaml rsync-backup
 
 # Configure: rsync-backup
 ENV \

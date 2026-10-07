@@ -10,8 +10,8 @@ if [[ ! -e "${EP_RUN}" ]] ; then
 	generate_sshkey rsync-backup
 
 	log "Staging ssh keys ..."
-	install --group=root --mode=0600 --owner=root "${EP_SECRETS_ROOT}/id_rsa.rsync-backup" "/root/.ssh/id_rsa"
-	install --group=root --mode=0644 --owner=root "${EP_SECRETS_ROOT}/id_rsa.rsync-backup.pub" "/root/.ssh/id_rsa.pub"
+	install --group=root --mode=0600 --owner=root "${EP_SECRETS_ROOT}/id_${EP_SSH_KEY_TYPE}.rsync-backup" "/root/.ssh/id_${EP_SSH_KEY_TYPE}"
+	install --group=root --mode=0644 --owner=root "${EP_SECRETS_ROOT}/id_${EP_SSH_KEY_TYPE}.rsync-backup.pub" "/root/.ssh/id_${EP_SSH_KEY_TYPE}.pub"
 
 	# Volume initialization
 	if [[ ! -f "${RSYNC_BACKUP_CONFIG}/rsync-backup.yml" ]] ; then
